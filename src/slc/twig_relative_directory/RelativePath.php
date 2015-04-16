@@ -46,7 +46,10 @@ class RelativePath extends Twig_Extension
 	public function twig_prefix_relative_path(Twig_Environment $env, $value)
 	{
 		$dir = dirname($_SERVER['SCRIPT_NAME']);
-		return $dir.'/'.$value;
+		if(substr($dir, -1) === '/') {
+			return $dir.$value;
+		}
+		return $dir . '/' . $value;
 	}
 }
 
