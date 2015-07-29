@@ -21,6 +21,7 @@ use Twig_Environment;
 
 class RelativePath extends Twig_Extension
 {
+	private static $pathReplacements = array();
 	/**
 	 * Returns a list of filters.
 	 *
@@ -42,10 +43,19 @@ class RelativePath extends Twig_Extension
 	{
 		return 'RelativePath';
 	}
+	public static function setPathReplacements(array $values) {
+		static::$pathReplacements = $values;
+	}
+	public static function getPathReplacements() {
+		return static::$pathReplacements;
+	}
 
 	public function twig_prefix_relative_path(Twig_Environment $env, $value)
 	{
 		$dir = dirname($_SERVER['SCRIPT_NAME']);
+		if(sizeof(static::$pathReplacements) > 0) {
+			$dir = preg_replace(array_keys(static::$pathReplacements), array_values(static::$pathReplacements), $dir);
+		}
 		if(substr($dir, -1) === '/') {
 			return $dir.$value;
 		}
